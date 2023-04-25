@@ -41,7 +41,7 @@ public class EventoController {
 		//tipo Iterable porque vai ser uma lista de eventos. Usando funcao findAll de repository 
 		Iterable<Evento> eventos = eventoRepository.findAll();
 		
-		//adicionando lista ao objeto que vai ser passado para o html
+		//adicionando lista ao objeto ModelAndView que vai ser passado para o html com os valores obtidos 
 		//(nome dado ao objeto no html, lista de objetos)
 		mv.addObject("eventos", eventos);
 		
