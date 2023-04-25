@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.eventoapp.models.Evento;
 import com.eventoapp.repository.EventoRepository;
@@ -28,5 +29,22 @@ public class EventoController {
 		eventoRepository.save(evento);
 
 		return "redirect:/cadastrarEvento";
+	}
+	
+	//funcao que vai retornar a lista de todos eventos ao acessar a url /eventos
+	@GetMapping("/eventos")
+	public ModelAndView listaEventos() {
+		//recebe a pagina(template) que vai renderizar com os dados do evento
+		ModelAndView mv = new ModelAndView("index");
+		
+		//fazendo busca dos eventos
+		//tipo Iterable porque vai ser uma lista de eventos. Usando funcao findAll de repository 
+		Iterable<Evento> eventos = eventoRepository.findAll();
+		
+		//adicionando lista ao objeto que vai ser passado para o html
+		//(nome dado ao objeto no html, lista de objetos)
+		mv.addObject("eventos", eventos);
+		
+		return mv;
 	}
 }
