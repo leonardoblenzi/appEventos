@@ -1,8 +1,11 @@
 package com.eventoapp.controllers;
 
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -27,7 +30,6 @@ public class EventoController {
 	public String form(Evento evento) {
 		// salva o evento passado como parametro no BD
 		eventoRepository.save(evento);
-
 		return "redirect:/cadastrarEvento";
 	}
 	
@@ -46,5 +48,26 @@ public class EventoController {
 		mv.addObject("eventos", eventos);
 		
 		return mv;
+	}
+	
+	//funcao que vai retornar detalhes do evento
+	//ao receber o CODIGO do evento Long pela url vai chamar a funcao
+	
+	//recebe o codigo do evento como parametro e a partir dele vai fazer uma busca
+	@GetMapping("/{codigo}")
+	public ModelAndView detalhesEvento(@PathVariable("codigo") long codigo) {
+		
+		//chamando funcao, procurando pelo codigo e passando valor retornado para evento
+		Optional<Evento> evento = eventoRepository.findById(codigo);
+		
+		//recebe a pagina(template) que vai renderizar com os dados do evento
+		ModelAndView mv = new ModelAndView("evento/detalhesEvento");
+		
+		//adicionando lista ao objeto ModelAndView que vai ser passado para o html com os valores obtidos 
+		//(nome dado ao objeto no html, objeto)
+		mv.addObject("evento", evento);
+		
+		return mv;
+		
 	}
 }
