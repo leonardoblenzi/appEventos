@@ -1,11 +1,14 @@
 package com.eventoapp.models;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 
 @Entity
 public class Evento implements Serializable{
@@ -21,6 +24,9 @@ public class Evento implements Serializable{
 	private String local;
 	private String data;
 	private String horario;
+	//UM evento pode ter MUITOS convidados
+	@OneToMany
+	private List<Convidado> convidados = new ArrayList<>();
 	
 	
 	public Long getCodigo() {
