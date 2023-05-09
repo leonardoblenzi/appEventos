@@ -77,6 +77,13 @@ public class EventoController {
 		// (nome dado ao objeto no html, objeto)
 		mv.addObject("evento", evento);
 
+		//pegando lista de convidados do evento especifico
+		Iterable<Convidado> convidados = convidadoRepository.findByEvento(evento.get());
+		
+		//enviando essa lista de convidados para a view
+		
+		mv.addObject("convidados", convidados);
+		
 		return mv;
 
 	}
