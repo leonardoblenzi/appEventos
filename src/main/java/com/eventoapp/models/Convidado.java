@@ -1,7 +1,9 @@
 package com.eventoapp.models;
 
 import java.io.Serializable;
-import java.util.Optional;
+
+import javax.validation.constraints.NotEmpty;
+
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -14,11 +16,14 @@ public class Convidado implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-
+	
 	@Id
+	@NotEmpty
 	private String rg;
 	
+	@NotEmpty
 	private String nomeConvidado;
+	
 	//evento ao qual o convidado pertence
 	//ManyToOne-> MUITOS convidados para UM evento
 	@ManyToOne

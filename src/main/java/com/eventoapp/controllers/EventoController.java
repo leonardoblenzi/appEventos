@@ -2,12 +2,16 @@ package com.eventoapp.controllers;
 
 import java.util.Optional;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.eventoapp.models.Convidado;
 import com.eventoapp.models.Evento;
@@ -20,7 +24,7 @@ public class EventoController {
 	// fazendo injeção de dependencia com os repositorys para fazer as operações
 	@Autowired
 	private EventoRepository eventoRepository;
-	
+
 	@Autowired
 	private ConvidadoRepository convidadoRepository;
 
@@ -33,9 +37,20 @@ public class EventoController {
 	// ao receber uma requisição POST salva o evento no banco de dados e redireciona
 	// para o formulario(view) de cadastrar evento
 	@PostMapping("/cadastrarEvento")
-	public String form(Evento evento) {
+	public String form(@Valid Evento evento, BindingResult result, RedirectAttributes attributes) {
+		// Verifica se há erros de validação nos campos preenchidos
+		if (result.hasErrors()) {
+			attributes.addFlashAttribute("mensagem", "Verifique os campos");
+			// redirecionando para pagina do formulario de novo
+			return "redirect:/cadastrarEvento}";
+		}
+
 		// salva o evento passado como parametro no BD
 		eventoRepository.save(evento);
+
+		// se salvar com sucesso exibe mensagem para o usuario
+		attributes.addFlashAttribute("mensagem", "Evento adicionado com sucesso!");
+
 		return "redirect:/cadastrarEvento";
 	}
 
@@ -77,33 +92,51 @@ public class EventoController {
 		// (nome dado ao objeto no html, objeto)
 		mv.addObject("evento", evento);
 
-		//pegando lista de convidados do evento especifico
+		// pegando lista de convidados do evento especifico
 		Iterable<Convidado> convidados = convidadoRepository.findByEvento(evento.get());
-		
-		//enviando essa lista de convidados para a view
-		
+
+		// enviando essa lista de convidados para a view
+
 		mv.addObject("convidados", convidados);
-		
+
 		return mv;
 
 	}
 
-	//à partir de uma requisicao post vai executar e salvar o convidado no BD
+	// à partir de uma requisicao post vai executar e salvar o convidado no BD
 	@PostMapping(value = "/{codigo}")
-	public String cadastrarConvidado(@PathVariable("codigo") long codigo, Convidado convidado) {
-		//buscando pelo codigo do evento e atribuindo à var
+	public String cadastrarConvidado(@PathVariable("codigo") long codigo, @Valid Convidado convidado,
+			BindingResult result, RedirectAttributes attributes) {
+
+		// Verifica se há erros de validação nos campos preenchidos
+		if (result.hasErrors()) {
+			attributes.addFlashAttribute("mensagem", "Verifique os campos");
+			// redirecionando para pagina do formulario de novo
+			return "redirect:/{codigo}";
+		}
+
+		// buscando pelo codigo do evento e atribuindo à var
 		Optional<Evento> eventoBusca = eventoRepository.findById(codigo);
-		
-		//extraindo o valor do Optional
+
+		// Verifica se o evento existe antes de prosseguir
+		if (!eventoBusca.isPresent()) {
+			attributes.addFlashAttribute("mensagem", "Evento não encontrado");
+			return "redirect:/";
+		}
+
+		// extraindo o valor do Optional
 		Evento evento = eventoBusca.get();
-		
-		//setando o evento para convidado
+
+		// setando o evento para convidado
 		convidado.setEvento(evento);
 
-		//salvando convidado no BD
-		
+		// salvando convidado no BD
+
 		convidadoRepository.save(convidado);
-		
+
+		// se salvar com sucesso exibe mensagem para o usuario
+		attributes.addFlashAttribute("mensagem", "Convidado adicionado com sucesso!");
+
 		return "redirect:/{codigo}";
 
 	}
