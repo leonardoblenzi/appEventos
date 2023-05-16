@@ -47,7 +47,6 @@ public class EventoController {
 
 		// salva o evento passado como parametro no BD
 		eventoRepository.save(evento);
-
 		// se salvar com sucesso exibe mensagem para o usuario
 		attributes.addFlashAttribute("mensagem", "Evento adicionado com sucesso!");
 
@@ -90,7 +89,7 @@ public class EventoController {
 		// adicionando lista ao objeto ModelAndView que vai ser passado para o html com
 		// os valores obtidos
 		// (nome dado ao objeto no html, objeto)
-		mv.addObject("evento", evento);
+		mv.addObject("evento", evento.get());
 
 		// pegando lista de convidados do evento especifico
 		Iterable<Convidado> convidados = convidadoRepository.findByEvento(evento.get());
