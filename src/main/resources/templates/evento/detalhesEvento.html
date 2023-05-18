@@ -63,8 +63,8 @@
 	<th:block th:include="mensagemValidacao"></th:block>
 
 	<form class="formConvidado" method="post">
-		Nome:<input type="text" value="" name="nomeConvidado" placeholder="Nome completo"> 
-		RG:<input type="text" value="" name="rg" placeholder="11.111.111-11">
+		Nome:<input type="text" value="" name="nomeConvidado" placeholder="Nome completo" required="required"> 
+		RG:<input type="text" value="" name="rg" placeholder="11.111.111-11" required="required">
 				
 		<button type="submit" class="waves-effect waves-light btn">Adicionar
 				Convidado</button>
@@ -79,6 +79,7 @@
 			<tr>
 				<th>Nome do convidado </th>
 				<th>RG </th>
+				<th>Deletar</th>
 			</tr>
 		</thead>
 		
@@ -91,6 +92,15 @@
 				<td>
 					<span th:text="${convidado.rg}"></span>
 				</td>
+				
+				<td>
+					<td>
+					<!-- chamando funcao deletarConvidado e passando rg do convidado como parametro -->
+					<a th:href="${(#mvc.url('EC#deletarConvidado').arg(0, convidado.rg).build() )}">
+						<i class="material-icons left">delete</i>
+					</a>
+				</td>
+				
 			
 			</tr>
 			

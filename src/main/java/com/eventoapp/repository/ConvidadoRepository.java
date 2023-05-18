@@ -10,5 +10,7 @@ public interface ConvidadoRepository extends JpaRepository<Convidado, String> {
 	//lista(iterable) de convidado que recebe um evento como parametro e vai retornar somente convidados que estejam nesse evento
 	Iterable<Convidado> findByEvento(Evento evento);
 	
+	//definindo metodo que retorna convidado procurando pelo rg
+	Convidado findByRg(String rg);
 
 }

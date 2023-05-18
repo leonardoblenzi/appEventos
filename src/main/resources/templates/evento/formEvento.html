@@ -40,20 +40,20 @@
 	<th:block th:include="mensagemValidacao"></th:block>
 	
 	<form class="container formConvidado" method="post" action="">
-				Nome: <input type="text" value="" name="nome">
+				Nome: <input type="text" value="" name="nome" required="required">
 				
 				
 				<div class="row">
 					<div class="input-field col s6">
-						Local: <input type="text" value="" name="local">
+						Local: <input type="text" value="" name="local" required="required">
 					</div>
 					
 					<div class="input-field col s3">
-						Data: <input type="date" value="" name="data">
+						Data: <input type="date" value="" name="data" required="required">
 					</div>
 						
 					<div class="input-field col s3">
-						Horario: <input type="time" value="" name="horario">
+						Horario: <input type="time" value="" name="horario" required="required">
 					</div>
 				
 				</div>

@@ -139,4 +139,36 @@ public class EventoController {
 		return "redirect:/{codigo}";
 
 	}
+	
+	@GetMapping("/deletarEvento")
+	public String deletarEvento(long codigo) {
+		//buscando evento
+		Optional<Evento> eventoBusca = eventoRepository.findById(codigo);
+		//acessando elemento Optional(lista) para obter valor de evento
+		Evento evento = eventoBusca.get();
+		
+		//deletando evento
+		eventoRepository.delete(evento);
+		
+		
+		return "redirect:/eventos";
+	}
+	
+	@GetMapping("/deletarConvidado")
+	public String deletarConvidado(String rg) {
+		//buscando convidado
+		Convidado convidado = convidadoRepository.findByRg(rg);
+		
+		//deletando convidado
+		convidadoRepository.delete(convidado);
+		
+		//buscando evento a que convidado pertence
+		Evento evento = convidado.getEvento();
+		long codigoEvento = evento.getCodigo();
+		
+		//passando para string 
+		String codigo = String.valueOf(codigoEvento);
+		
+		return "redirect:/" + codigo;
+	}
 }
