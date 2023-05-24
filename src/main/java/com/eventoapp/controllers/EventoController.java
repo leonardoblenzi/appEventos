@@ -139,36 +139,84 @@ public class EventoController {
 		return "redirect:/{codigo}";
 
 	}
-	
+
 	@GetMapping("/deletarEvento")
 	public String deletarEvento(long codigo) {
-		//buscando evento
+		// buscando evento
 		Optional<Evento> eventoBusca = eventoRepository.findById(codigo);
-		//acessando elemento Optional(lista) para obter valor de evento
+		// acessando elemento Optional(lista) para obter valor de evento
 		Evento evento = eventoBusca.get();
-		
-		//deletando evento
+
+		// deletando evento
 		eventoRepository.delete(evento);
-		
-		
+
 		return "redirect:/eventos";
 	}
-	
+
 	@GetMapping("/deletarConvidado")
 	public String deletarConvidado(String rg) {
-		//buscando convidado
+		// buscando convidado
 		Convidado convidado = convidadoRepository.findByRg(rg);
-		
-		//deletando convidado
+
+		// deletando convidado
 		convidadoRepository.delete(convidado);
-		
-		//buscando evento a que convidado pertence
+
+		// buscando evento a que convidado pertence
 		Evento evento = convidado.getEvento();
 		long codigoEvento = evento.getCodigo();
-		
-		//passando para string 
+
+		// passando para string
 		String codigo = String.valueOf(codigoEvento);
-		
+
 		return "redirect:/" + codigo;
 	}
+
+	//formulario de edição evento
+	@GetMapping("/editarEvento")
+	public ModelAndView editarEvento(long codigo) {
+		// buscando evento
+		Optional<Evento> eventoBusca = eventoRepository.findById(codigo);
+		// acessando elemento Optional(lista) para obter valor de evento
+		Evento evento = eventoBusca.get();
+		
+		ModelAndView mv = new ModelAndView("evento/update-evento");
+		mv.addObject("evento", evento);
+		return mv;
+	}
+	
+	
+	@PostMapping("/editar-evento")
+	public String updateEvento(@Valid Evento evento, BindingResult result, RedirectAttributes attributes) {
+	    // Verificar se há erros de validação nos campos preenchidos
+	    if (result.hasErrors()) {
+	        // Lógica para lidar com os erros de validação
+	        return "eventos";
+	    }
+	    
+	    // Carregar o evento existente do banco de dados usando o id recebido
+	    Optional<Evento> eventoExistente = eventoRepository.findById(evento.getCodigo());
+	    
+	    // Verificar se o evento existe
+	    if (eventoExistente.isPresent()) {
+	        //pegando as informações de Optional atualizadas para o evento existente
+	        Evento eventoAtualizado = eventoExistente.get();
+	        
+	        //setando novos valores atualizados para o evento
+	        eventoAtualizado.setNome(evento.getNome());
+	        eventoAtualizado.setLocal(evento.getLocal());
+	        eventoAtualizado.setData(evento.getData());
+	        eventoAtualizado.setHorario(evento.getHorario());
+	        
+	        //salvando o evento atualizado no banco de dados
+	        eventoRepository.save(eventoAtualizado);
+	        
+	        attributes.addFlashAttribute("success", "Evento alterado com sucesso!");
+	    } else {
+	        //Lidar com o caso em que o evento não foi encontrado
+	        attributes.addFlashAttribute("error", "Evento não encontrado!");
+	    }
+	    
+	    return "redirect:/eventos";
+	}
+
 }
